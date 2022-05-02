@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Elogeek/intro-electron/issues"
   },
-  "homepage": "https://github.com/Elogeek/intro-electron#readme"
+  "homepage": "https://github.com/Elogeek/intro-electron#readme",
+  "dependencies": {
+    "@electron/remote": "^2.0.8"
+  }
 }

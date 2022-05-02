@@ -1,4 +1,5 @@
 const {app, BrowserWindow, ipcMain} = require("electron");
+const remote = require('@electron/remote/main');
 
 // Create the Browser Window and load the main html entry point.
 const makeWindow = () => {
@@ -6,7 +7,12 @@ const makeWindow = () => {
         width: 1000,
         height: 500,
         center: true,
-        title: 'Intro Electron'
+        title: 'Intro Electron',
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+        }
     })
 
     // Second window (child window)
@@ -17,6 +23,8 @@ const makeWindow = () => {
         y: win.getBounds().y + 50,
     });
 
+    remote.initialize();
+    remote.enable(win.webContents);
     win.loadFile("src/hello-world.html");
     secondWindow.loadURL('https://www.google.fr');
     // Open console
@@ -54,12 +62,4 @@ ipcMain.on('log-error', (event, arg) => {
     }
 })
 
-// Box dialog two
-ipcMain.on("show-error-box", (event, arg) => {
-    if('title' in arg && 'message' in arg) {
-        eletron.dialog.showErrorBox(arg.title, arg.message)
-    }
-    else {
-        eletron.dialog.showErrorBox('Unkown error', "Erreur inconnue déclenchée !");
-    }
-});
+
