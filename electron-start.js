@@ -1,5 +1,4 @@
 const {app, BrowserWindow, ipcMain} = require("electron");
-const remote = require('@electron/remote/main');
 
 // Create the Browser Window and load the main html entry point.
 const makeWindow = () => {
@@ -9,9 +8,7 @@ const makeWindow = () => {
         center: true,
         title: 'Intro Electron',
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            enableRemoteModule: true,
+            preload: path.resolve(__dirname + "/preload.js")
         }
     })
 
@@ -23,8 +20,6 @@ const makeWindow = () => {
         y: win.getBounds().y + 50,
     });
 
-    remote.initialize();
-    remote.enable(win.webContents);
     win.loadFile("src/hello-world.html");
     secondWindow.loadURL('https://www.google.fr');
     // Open console
@@ -60,6 +55,6 @@ ipcMain.on('log-error', (event, arg) => {
     else {
         console.log("Une erreur inconnue est apparue par un Render process")
     }
-})
+});
 
 
