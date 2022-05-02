@@ -1,0 +1,24 @@
+{
+  "name": "intro-electron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "electron-start.js",
+  "scripts": {
+    "electron": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^18.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elogeek/intro-electron.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Elogeek/intro-electron/issues"
+  },
+  "homepage": "https://github.com/Elogeek/intro-electron#readme"
+}
