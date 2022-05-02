@@ -21,7 +21,6 @@ const makeWindow = () => {
     secondWindow.loadURL('https://www.google.fr');
     // Open console
     win.webContents.openDevTools();
-
 }
 
 // Create app when electron is ready.
