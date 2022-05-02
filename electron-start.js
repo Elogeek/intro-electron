@@ -10,6 +10,8 @@ const makeWindow = () => {
     })
 
     win.loadFile("src/hello-world.html");
+    // Open console
+    win.webContents.openDevTools();
     /* Second window (child window)
     const secondWindow = new BrowserWindow({
         movable: true,
@@ -17,9 +19,6 @@ const makeWindow = () => {
         x: win.getBounds().x + 100,
         y: win.getBounds().y + 50,
     });
-
-    // Open console
-    win.webContents.openDevTools();
 
      */
 }
