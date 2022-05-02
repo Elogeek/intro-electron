@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require("electron");
+const {app, BrowserWindow, ipcMain} = require("electron");
 
 // Create the Browser Window and load the main html entry point.
 const makeWindow = () => {
@@ -42,4 +42,8 @@ app.on("window-all-closed", () => {
     }
 });
 
-app.whenReady().then(makeWindow);
+ipcMain.on('log-error', (event, args) => {
+    console.log("Erreur : " + args)
+})
+
+
