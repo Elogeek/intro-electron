@@ -9,10 +9,7 @@ const makeWindow = () => {
         title: 'Intro Electron'
     })
 
-    win.loadFile("src/hello-world.html");
-    // Open console
-    win.webContents.openDevTools();
-    /* Second window (child window)
+    // Second window (child window)
     const secondWindow = new BrowserWindow({
         movable: true,
         parent: win,
@@ -20,10 +17,14 @@ const makeWindow = () => {
         y: win.getBounds().y + 50,
     });
 
-     */
+    win.loadFile("src/hello-world.html");
+    secondWindow.loadURL('https://www.google.fr');
+    // Open console
+    win.webContents.openDevTools();
+
 }
 
-/* Create app when electron is ready.
+// Create app when electron is ready.
 app.whenReady().then(() => {
     makeWindow();
     // On MacOs, if app window does not exist, then create on "activate" event.
@@ -41,7 +42,5 @@ app.on("window-all-closed", () => {
         app.quit();
     }
 });
-*/
-//secondWindow.loadURL('https://www.google.fr');
 
 app.whenReady().then(makeWindow);
