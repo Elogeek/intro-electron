@@ -42,8 +42,24 @@ app.on("window-all-closed", () => {
     }
 });
 
-ipcMain.on('log-error', (event, args) => {
-    console.log("Erreur : " + args)
+ipcMain.on('log-error', (event, arg) => {
+    if('type' in arg && 'message' in arg) {
+        console.table(arg);
+        console.log('Erreur -> Type: ${arg.type} => message: ${arg.message}');
+        //Send a answer à l'émetteur de l'event 'log-error'
+        event.sender.send('log-error-reply', "Error was logged");
+    }
+    else {
+        console.log("Une erreur inconnue est apparue par un Render process")
+    }
 })
 
-
+// Box dialog two
+ipcMain.on("show-error-box", (event, arg) => {
+    if('title' in arg && 'message' in arg) {
+        eletron.dialog.showErrorBox(arg.title, arg.message)
+    }
+    else {
+        eletron.dialog.showErrorBox('Unkown error', "Erreur inconnue déclenchée !");
+    }
+});
