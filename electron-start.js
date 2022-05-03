@@ -1,10 +1,12 @@
 const {app, BrowserWindow, ipcMain} = require("electron");
 const path = require("path");
-const fetch = require('node-fetch');
+//const fetch = require('node-fetch');
+const {dialog} = require("@electron/remote");
 
 // Create the Browser Window and load the main html entry point.
+let mainWindow = null;
 const makeWindow = () => {
-    const win = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 1000,
         height: 500,
         center: true,
@@ -18,15 +20,15 @@ const makeWindow = () => {
     // Second window (child window)
     const secondWindow = new BrowserWindow({
         movable: true,
-        parent: win,
-        x: win.getBounds().x + 100,
-        y: win.getBounds().y + 50,
+        parent: mainWindow,
+        x: mainWindow.getBounds().x + 100,
+        y: mainWindow.getBounds().y + 50,
     });
 
-    win.loadFile("src/hello-world.html");
+    mainWindow.loadFile("src/hello-world.html");
     secondWindow.loadURL('https://www.google.fr');
     // Open console
-    win.webContents.openDevTools();
+   mainWindow.webContents.openDevTools();
 }
 
 // Create app when electron is ready.
@@ -50,12 +52,19 @@ app.on("window-all-closed", () => {
 
 /**
  * Simple ajax call from Main process
- */
+
 ipcMain.handle('ajax-request', async (event, url) => {
     const response = await fetch(url);
     return response.json();
 })
+ */
 
+// Box dialog
+ipcMain.handle('showMessageBox', (event, arg) =>
+    dialog.showMessageBox(mainWindow, arg));
+
+
+// Logger events
 ipcMain.on('log', (event, arg) => {
     if('type' in arg && 'message' in arg) {
         console.table(arg);
