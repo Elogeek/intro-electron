@@ -1,80 +1,52 @@
-const {app, BrowserWindow, ipcMain} = require("electron");
-const path = require("path");
-//const fetch = require('node-fetch');
-const {dialog} = require("@electron/remote");
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const path = require('path');
 
 // Create the Browser Window and load the main html entry point.
 let mainWindow = null;
 const makeWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 1000,
-        height: 500,
+        width: 1200,
+        height: 600,
         center: true,
-        title: 'Intro Electron',
+        title: "CTrack",
+        icon: path.resolve(__dirname + "/assets/icon.png"),
         autoHideMenuBar: true,
         webPreferences: {
-            preload: path.resolve(__dirname + "/preload.js")
+            preload: `${__dirname}/preload.js`
         }
     })
 
-    // Second window (child window)
-    const secondWindow = new BrowserWindow({
-        movable: true,
-        parent: mainWindow,
-        x: mainWindow.getBounds().x + 100,
-        y: mainWindow.getBounds().y + 50,
-    });
-
-    mainWindow.loadFile("src/hello-world.html");
-    secondWindow.loadURL('https://www.google.fr');
-    // Open console
-   mainWindow.webContents.openDevTools();
-}
+    mainWindow.webContents.openDevTools();
+    mainWindow.loadFile('src/index.html');
+};
 
 // Create app when electron is ready.
 app.whenReady().then(() => {
     makeWindow();
-    // On MacOs, if app window does not exist, then create on "activate" event.
-    app.on("activate", () => {
-        makeWindow();
+    app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
-            makeWindow();
+            makeWindow()
         }
-    });
+    })
 });
 
-// Closing app if all windows are closed.
-app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
+// Closing app if all windows are closed BUT MacOs.
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit()
     }
 });
 
-/**
- * Simple ajax call from Main process
-
-ipcMain.handle('ajax-request', async (event, url) => {
-    const response = await fetch(url);
-    return response.json();
-})
- */
-
-// Box dialog
-ipcMain.handle('showMessageBox', (event, arg) =>
-    dialog.showMessageBox(mainWindow, arg));
-
-
-// Logger events
+// Logger events.
 ipcMain.on('log', (event, arg) => {
     if('type' in arg && 'message' in arg) {
         console.table(arg);
-        console.log('Erreur -> Type: ${arg.type} => message: ${arg.message}');
-        //Send a answer à l'émetteur de l'event 'log'
-        event.sender.send('main-process-event', "Message logged");
+        console.log(`Type: ${arg.type} => message: ${arg.message}`);
     }
     else {
-        console.log("Une erreur inconnue est apparue par un Render process")
+        console.error('Une erreur inconnue a été reportée par un des Render process');
     }
 });
 
 
+ipcMain.handle('showMessageBox', (event, arg) => dialog.showMessageBox(mainWindow, arg));
