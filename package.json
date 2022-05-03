@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/Elogeek/intro-electron#readme",
   "dependencies": {
-    "@electron/remote": "^2.0.8"
+    "@electron/remote": "^2.0.8",
+    "node-fetch": "^2.6.7"
   }
 }

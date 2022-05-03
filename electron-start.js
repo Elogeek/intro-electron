@@ -1,5 +1,6 @@
 const {app, BrowserWindow, ipcMain} = require("electron");
 const path = require("path");
+const fetch = require('node-fetch');
 
 // Create the Browser Window and load the main html entry point.
 const makeWindow = () => {
@@ -46,6 +47,14 @@ app.on("window-all-closed", () => {
         app.quit();
     }
 });
+
+/**
+ * Simple ajax call from Main process
+ */
+ipcMain.handle('ajax-request', async (event, url) => {
+    const response = await fetch(url);
+    return response.json();
+})
 
 ipcMain.on('log', (event, arg) => {
     if('type' in arg && 'message' in arg) {
