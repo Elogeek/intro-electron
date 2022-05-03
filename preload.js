@@ -1,19 +1,23 @@
-const {contextBridge, ipcRender} = require("electron");
+const {contextBridge, ipcRenderer} = require("electron");
 
 // Message error
-logError = (message, level) => {
-    ipcRender.send('log', {
+const logError = (message, level, onMainProcessEvent = () => {}) => {
+    ipcRenderer.send('log', {
         type: level,
         message: message
     });
+    ipcRenderer.once('main-process-event', onMainProcessEvent)
 };
 
 // Message success
-logSuccess = (message, level) => {
-    ipcRender.send('log', {
-        type: level,
+const logSuccess = (message, level, onMainProcessEvent = () => {}) => {
+    ipcRenderer.send('log', {
+        type: 'success',
         message: message
     });
+    ipcRenderer.on('main-process-event', onMainProcessEvent);
+    // delete event
+    ipcRenderer.removeAllListeners('main-process-event');
 };
 
 contextBridge.exposeInMainWorld('logger', {

@@ -1,4 +1,5 @@
 const {app, BrowserWindow, ipcMain} = require("electron");
+const path = require("path");
 
 // Create the Browser Window and load the main html entry point.
 const makeWindow = () => {
@@ -7,6 +8,7 @@ const makeWindow = () => {
         height: 500,
         center: true,
         title: 'Intro Electron',
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.resolve(__dirname + "/preload.js")
         }
@@ -45,12 +47,12 @@ app.on("window-all-closed", () => {
     }
 });
 
-ipcMain.on('log-error', (event, arg) => {
+ipcMain.on('log', (event, arg) => {
     if('type' in arg && 'message' in arg) {
         console.table(arg);
         console.log('Erreur -> Type: ${arg.type} => message: ${arg.message}');
-        //Send a answer à l'émetteur de l'event 'log-error'
-        event.sender.send('log-error-reply', "Error was logged");
+        //Send a answer à l'émetteur de l'event 'log'
+        event.sender.send('main-process-event', "Message logged");
     }
     else {
         console.log("Une erreur inconnue est apparue par un Render process")
