@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
+const fs = require("fs");
 
 // Create the Browser Window and load the main html entry point.
 let mainWindow = null;
@@ -50,3 +51,16 @@ ipcMain.on('log', (event, arg) => {
 
 
 ipcMain.handle('showMessageBox', (event, arg) => dialog.showMessageBox(mainWindow, arg));
+
+// Writing file
+ipcMain.handle('save-file', (event, filename, content) => {
+    if(filename) {
+        try {
+            fs.writeFileSync(path.resolve(__dirname, filename), content);
+            return true;
+        }
+        catch(err) {
+            return false;
+        }
+    }
+})
