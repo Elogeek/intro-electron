@@ -53,14 +53,29 @@ ipcMain.on('log', (event, arg) => {
 ipcMain.handle('showMessageBox', (event, arg) => dialog.showMessageBox(mainWindow, arg));
 
 // Writing file
-ipcMain.handle('save-file', (event, filename, content) => {
-    if(filename) {
-        try {
-            fs.writeFileSync(path.resolve(__dirname, filename), content);
-            return true;
-        }
-        catch(err) {
-            return false;
-        }
-    }
-})
+ipcMain.handle('save-file', async (event, content) => {
+    // Affichage d'une boite de dialog
+    dialog.showSaveDialog(mainWindow, {
+        // Options de la boite dialog
+        title: "Choisissez une destination",
+        defaultPath: path.resolve(__dirname, 'mon-fichier.txt'),
+        buttonLabel: "valider mon choix"
+    })
+        // Une * un fichier et le chemin choisi, on traite l'enregistrement
+        .then(result => {
+            // Uniquement si l'useer n'a pas appuyer sur le btn annuler
+            if(!result.canceled) {
+                try {
+                    // Enregistrement
+                    fs.writeFileSync(result.filePath, content);
+                }
+                catch(err) {
+                    // If enregistrement échoue, alors message error s'affiche
+                    dialog.showErrorBox("Erreur", "une erreur est survenue");
+                }
+            }
+        })
+        // Prise en charge d'autres erruerrs potentiels
+        .catch(err => () => dialog.showErrorBox("Erreur", "une erreur est survenue"))
+
+});
