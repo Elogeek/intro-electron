@@ -1,6 +1,5 @@
-const { app, BrowserWindow, ipcMain, Menu, dialog} = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, MenuItem} = require('electron');
 const path = require('path');
-const fs = require('fs');
 
 const ipcDialog = require('./main/dialog');
 const ipcFile = require('./main/files');
@@ -45,5 +44,21 @@ app.on('window-all-closed', () => {
 ipcDialog.init(mainWindow, ipcMain);
 ipcFile.init(mainWindow, ipcMain);
 ipcLogger.init(ipcMain);
+
+// Application menu.
 const menu = new ApplicationMenu(mainWindow);
 Menu.setApplicationMenu(menu.getMenu());
+
+// contextual menu.
+const contextualMenuTemplate = [
+    {
+        label: "Menu contextuel 1",
+        click: () => console.log("Menu contextuel 1 clicked"),
+    }
+];
+
+const contextualMenu = Menu.buildFromTemplate(contextualMenuTemplate);
+
+
+// Affichage du menu contextuel
+ipcMain.on('show-context-menu', (event) => contextualMenu.popup(mainWindow));
